@@ -30,37 +30,27 @@ const getFENsFromPGN = (pgnString: string): string[] => {
   return fenArray
 };
 
-
-const getPlayersNames = (pgnString: string): string[][] => {
-  const metadataOnly = pgnString
+const getOnlyMetadata = (pgnString: string) => {
+  return pgnString
   .split("\n") 
   .filter(line => line.startsWith("[") && line.trim() !== "") 
   .join("\n"); 
-  const whiteMatch = metadataOnly.match(/\[White\s"([^"]+)"\]/);
-  const blackMatch = metadataOnly.match(/\[Black\s"([^"]+)"\]/);
-  const whiteEloMatch = metadataOnly.match(/\[WhiteElo\s"(\d+)"\]/);
-  const blackEloMatch = metadataOnly.match(/\[BlackElo\s"(\d+)"\]/);
 
-  const whitePlayer = whiteMatch ? whiteMatch[1] : "";
-  const blackPlayer = blackMatch ? blackMatch[1] : "";
-  const whiteElo = whiteEloMatch ?` (${whiteEloMatch[1]})` : "";
-  const blackElo = blackEloMatch ? ` (${blackEloMatch[1]})` : "";
-
-  return [[whitePlayer, whiteElo], [blackPlayer, blackElo]]
 }
 
+function extractMetadata(pgnString: string, key: string) {
+  const metadataOnly = getOnlyMetadata(pgnString);
+  const match = metadataOnly.match(new RegExp(`\\[${key}\\s"([^"]+)"\\]`));
+  return match ? match[1] : "";
+}
 const getOpeningData = (pgnString: string): string => {
-  const metadataOnly = pgnString
-  .split("\n") 
-  .filter(line => line.startsWith("[") && line.trim() !== "") 
-  .join("\n"); 
+  const metadataOnly = getOnlyMetadata(pgnString);
   const openingMatch = metadataOnly.match(/\[Opening\s"([^"]+)"\]/)
   const opening = openingMatch ? openingMatch[1] : "";
   return opening
 }
 export {
   getFENsFromPGN,
-  getPlayersNames,
-  getOpeningData
-  
+  getOpeningData,
+  extractMetadata
 };
