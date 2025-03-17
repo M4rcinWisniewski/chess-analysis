@@ -15,6 +15,7 @@ export default function Analysis() {
             
         }}
         position={board}
+        arePiecesDraggable={false}
         />
         <Sidebar setBoard={setBoard} board={board}/>
     </div>
